@@ -25,8 +25,6 @@ int main(int argc, char ** argv)
   auto pub_gray = node->create_publisher<sensor_msgs::msg::CompressedImage>("image/gray/compressed", qos_profile);
   auto pub_bin = node->create_publisher<sensor_msgs::msg::CompressedImage>("image/binary/compressed", qos_profile);
   
-  
-
   cv::VideoCapture cap(src, cv::CAP_GSTREAMER);
   if (!cap.isOpened()) 
   {
@@ -52,7 +50,6 @@ int main(int argc, char ** argv)
     auto msg_gray = cv_bridge::CvImage(hdr, "mono8", gray_frame).toCompressedImageMsg();
     auto msg_bin = cv_bridge::CvImage(hdr, "mono8", bin_frame).toCompressedImageMsg();
 
-    // 3. 메시지 발행
     pub_raw->publish(*msg_raw);
     pub_gray->publish(*msg_gray);
     pub_bin->publish(*msg_bin);
