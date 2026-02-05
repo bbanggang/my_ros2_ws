@@ -34,7 +34,7 @@ private:
         if (!writer_.isOpened()) {
             int fourcc = cv::VideoWriter::fourcc('m', 'p', '4', 'v'); // mp4 코덱
             double fps = 30.0;
-            writer_.open("output.mp4", fourcc, fps, frame.size(), true);
+            writer_.open("/home/linux/ros2_ws/output.mp4", fourcc, fps, frame.size(), true);
             RCLCPP_INFO(this->get_logger(), "녹화를 시작합니다: output.mp4");
         }
 
