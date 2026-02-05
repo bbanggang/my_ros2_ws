@@ -35,7 +35,7 @@ int main(int argc, char * argv[])
         RCLCPP_ERROR(node->get_logger(), "Could not open video!");
         rclcpp::shutdown();
         return -1;
-    }
+    }  
     cv::Mat frame;
 
     while(rclcpp::ok())
