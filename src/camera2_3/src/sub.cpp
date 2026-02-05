@@ -2,7 +2,7 @@
 
 ImageSubscriber::ImageSubscriber() : Node("camsub_wsl")
 {
-    auto qos_profile = rclcpp::QoS(rclcpp::KeepLast(10));
+    auto qos_profile = rclcpp::QoS(rclcpp::KeepLast(10)).best_effort();
     
     subscription_ = this->create_subscription<sensor_msgs::msg::CompressedImage>(
         "image/compressed",

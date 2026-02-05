@@ -10,7 +10,7 @@ ImagePublisher::ImagePublisher():Node("image_publisher"){
   auto qos_profile = rclcpp::QoS(rclcpp::KeepLast(10)).best_effort();
   publisher_ = this->create_publisher<sensor_msgs::msg::CompressedImage>("image/compressed", qos_profile);
   
-  std::string src = "libcamerasrc ! \
+  pipeline_ = "libcamerasrc ! \
     video/x-raw,format=YUY2,width=640,height=480,framerate=30/1 ! \
       queue ! videoconvert ! videoflip method=rotate-180 ! \
       videoconvert ! video/x-raw, format=(string)BGR ! appsink";
