@@ -5,8 +5,8 @@
 #include <functional>
 #include <iostream>
 #include <opencv2/imgcodecs.hpp>
-using std::placeholders::_1;
   
+
 void mysub_callback(const std::string& win_name, const sensor_msgs::msg::CompressedImage::SharedPtr msg)
 {
     cv::Mat frame = cv::imdecode(cv::Mat(msg->data), cv::IMREAD_UNCHANGED);
@@ -24,6 +24,7 @@ int main(int argc, char* argv[])
     auto qos_profile = rclcpp::QoS(rclcpp::KeepLast(10)).best_effort(); //UDP
 
     // 람다 함수를 이용한 각 토픽별 구독 설정
+    // 람다 함수를 사용했기 때문에 bind로 std::function<void(MessageT) 형으로 만들 필요 없음
     auto sub_raw = node->create_subscription<sensor_msgs::msg::CompressedImage>(
         "image/raw/compressed", qos_profile, 
         [](const sensor_msgs::msg::CompressedImage::SharedPtr msg) {
