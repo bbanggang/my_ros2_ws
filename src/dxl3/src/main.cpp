@@ -16,7 +16,7 @@ int main(int argc, char * argv[])
     
     // 초기 속도 및 증감량 변수 설정
     int current_vel = 0; // 현재 속도
-    int step = 1;       // 변화 속도 (1rpm)
+    int step = 10;       // 변화 속도 (1rpm)
 
     if(!mx.open())
     {
@@ -36,13 +36,13 @@ int main(int argc, char * argv[])
         if (current_vel >= 100) 
         {
             current_vel = 100; // 100을 넘지 않도록 고정
-            step = -1;        // 감소 모드로 전환
+            step = -10;        // 감소 모드로 전환
             RCLCPP_INFO(node->get_logger(), "Reached Max (100). Decreasing...");
         }
         else if (current_vel <= -100) 
         {
             current_vel = -100; // -100을 넘지 않도록 고정
-            step = 1;          // 증가 모드로 전환
+            step = 10;          // 증가 모드로 전환
             RCLCPP_INFO(node->get_logger(), "Reached Min (-100). Increasing...");
         }
 
