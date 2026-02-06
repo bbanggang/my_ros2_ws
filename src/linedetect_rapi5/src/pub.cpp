@@ -4,27 +4,24 @@
 #include "opencv2/opencv.hpp"
 #include <memory>
 #include <chrono>
+#include <rclcpp/executors.hpp>
 
+std::string video_path = "/home/rapi5/ros2_ws/video/simulation/5_lt_cw_100rpm_out.mp4";
 
-// raspberry pi5
-std::string src = "libcamerasrc ! \
-	video/x-raw,format=YUY2,width=640,height=480,framerate=30/1 ! \
-    queue ! videoconvert ! videoflip method=rotate-180 ! \
-    videoconvert ! video/x-raw, format=(string)BGR ! appsink";
 
 int main(int argc, char * argv[])
 {
     rclcpp::init(argc, argv);
-    auto node = std::make_shared<rclcpp::Node>("campub");
+    auto node = std::make_shared<rclcpp::Node>("video_pub");
     // auto qos_profile = rclcpp::QoS(rclcpp::KeepLast(10)); //TCP
     auto qos_profile = rclcpp::QoS(rclcpp::KeepLast(10)).best_effort(); //UDP
     auto mypub = node->create_publisher<sensor_msgs::msg::CompressedImage>("image/compressed", qos_profile );
     
     std_msgs::msg::Header hdr;
     sensor_msgs::msg::CompressedImage::SharedPtr msg;
-    rclcpp::WallRate loop_rate(40.0);
+    rclcpp::WallRate loop_rate(30.0);
 
-    cv::VideoCapture cap(src, cv::CAP_GSTREAMER);
+    cv::VideoCapture cap(video_path);
     if (!cap.isOpened()) {
         RCLCPP_ERROR(node->get_logger(), "Could not open video!");
         rclcpp::shutdown();
@@ -36,10 +33,14 @@ int main(int argc, char * argv[])
     {
         cap >> frame;
         if (frame.empty()) { RCLCPP_ERROR(node->get_logger(), "frame empty"); break;}
+
+        hdr.stamp = node->get_clock()->now();
         msg = cv_bridge::CvImage(hdr, "bgr8", frame).toCompressedImageMsg();
         mypub->publish(*msg);
         loop_rate.sleep();
+        rclcpp::spin_some(node);
     }
+    cap.release();
     rclcpp::shutdown();
     return 0;
 }
