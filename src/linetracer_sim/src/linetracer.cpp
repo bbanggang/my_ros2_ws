@@ -76,7 +76,6 @@ private:
         cv::Mat frame = cv::imdecode(cv::Mat(msg->data), cv::IMREAD_COLOR);
         if (frame.empty()) return;
 
-
         // ROI 설정 및 전처리
         cv::Rect roi_rect(0, 270, 640, 90);
         cv::Mat roi = frame(roi_rect);
@@ -99,6 +98,13 @@ private:
             int area = stats.at<int>(i, cv::CC_STAT_AREA);
             if (area < 100 || area > 15000) continue;
 
+
+            int left = stats.at<int>(i, cv::CC_STAT_LEFT);
+            int top = stats.at<int>(i, cv::CC_STAT_TOP);
+            int width = stats.at<int>(i, cv::CC_STAT_WIDTH);
+            int height = stats.at<int>(i, cv::CC_STAT_HEIGHT);
+            cv::rectangle(display, cv::Rect(left, top, width, height), cv::Scalar(255, 0, 0), 2); // Blue Box
+
             double cx = centroids.at<double>(i, 0);
             double cy = centroids.at<double>(i, 1);
             double dist = std::sqrt(std::pow(cx - last_line_x_, 2) + std::pow(cy - last_line_y_, 2));
@@ -120,30 +126,42 @@ private:
 
         // 3. 오차 계산 및 속도 명령 생성
         double error = (bin.cols / 2.0) - last_line_x_;
+        double abs_error = std::abs(error);
+        int steer = 0;
         geometry_msgs::msg::Vector3 vel_msg;
 
         if (mode_) {
             // 주행 모드: P 제어 적용
-            int steer = static_cast<int>(error * k_);
+            if (abs_error > 200.0) {
+                k_ = 0.2;  
+            } 
+            else if (abs_error > 100.0) {
+                k_ = 0.5;
+            } 
+            else {
+                k_ = 0.8; 
+            }
+            steer = static_cast<int>(error * k_);
             vel_msg.x = base_vel_ - steer;       // 왼쪽 바퀴 속도
             vel_msg.y = -(base_vel_ + steer);    // 오른쪽 바퀴 속도 (반대 방향 가정)
         } else {
             // 정지 모드
             vel_msg.x = 0;
             vel_msg.y = 0;
+            steer = 0; 
         }
 
         // 4. 오차 계산 및 출력
         auto endTime = std::chrono::steady_clock::now();
         float totalTime = std::chrono::duration<float, std::milli>(endTime - startTime).count();
-        RCLCPP_INFO(this->get_logger(), "err: %lf, lvel: %lf, rvel: %lf, time: %lf",error, vel_msg.x, vel_msg.y, totalTime);
-        
+        RCLCPP_INFO(this->get_logger(), "err: %d, lvel: %lf, rvel: %lf, time: %lf",steer, vel_msg.x, vel_msg.y, totalTime);
         
         vel_pub_->publish(vel_msg);
-        
+
+ 
         // 5. 결과 윈도우 띄우기
-        cv::imshow("1. Raw ROI", roi);
-        cv::imshow("2. Binary Debug (Labeling)", display);
+        cv::imshow("1. Raw Video", frame);
+        cv::imshow("2. Binary Debug", display);
         cv::waitKey(1);
     }
 

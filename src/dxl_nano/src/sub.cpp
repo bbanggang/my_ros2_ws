@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
     rclcpp::shutdown();
     return -1;
     }
-    auto qos_profile = rclcpp::QoS(rclcpp::KeepLast(10));
+    auto qos_profile = rclcpp::QoS(rclcpp::KeepLast(10)).best_effort();
     std::function<void(const geometry_msgs::msg::Vector3::SharedPtr msg)>
     fn;
     fn = std::bind(mysub_callback, node, dxl, _1);

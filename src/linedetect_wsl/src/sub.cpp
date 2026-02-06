@@ -13,7 +13,7 @@ public:
 
         // 원본 영상 구독
         raw_sub_ = this->create_subscription<sensor_msgs::msg::CompressedImage>(
-            "image/raw/compressed", qos_profile,
+            "Image_Topic", qos_profile,
             std::bind(&LineTrackerProcessor::image_callback, this, std::placeholders::_1));
 
         // 초기 라인 위치 설정
@@ -34,7 +34,7 @@ private:
         if (frame.empty()) return;
 
         // 2. ROI 설정 및 전처리
-        cv::Rect roi_rect(0, 270, 640, 90); //
+        cv::Rect roi_rect(0, 270, 640, 90); 
         cv::Mat roi = frame(roi_rect);
         cv::Mat gray, bin, display;
 
