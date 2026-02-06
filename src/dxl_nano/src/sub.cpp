@@ -6,8 +6,7 @@
 using namespace std::placeholders;
 void mysub_callback(rclcpp::Node::SharedPtr node, Dxl& dxl, const geometry_msgs::msg::Vector3::SharedPtr msg)
 {
-RCLCPP_INFO(node->get_logger(), "Received message: %lf,%lf",
-msg->x, msg->y);
+RCLCPP_INFO(node->get_logger(), "Received message: %lf,%lf", msg->x, msg->y);
 dxl.setVelocity((int)msg->x, (int)msg->y);
 }
 int main(int argc, char* argv[])
@@ -25,7 +24,7 @@ int main(int argc, char* argv[])
     std::function<void(const geometry_msgs::msg::Vector3::SharedPtr msg)>
     fn;
     fn = std::bind(mysub_callback, node, dxl, _1);
-    auto mysub = node->create_subscription<geometry_msgs::msg::Vector3>("topic_dxlpub",qos_profile,fn);
+    auto mysub = node->create_subscription<geometry_msgs::msg::Vector3>("vel_cmd_topic",qos_profile,fn);
     rclcpp::spin(node);
     dxl.close();
     rclcpp::shutdown();

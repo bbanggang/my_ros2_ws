@@ -8,7 +8,7 @@ class VideoPublisher : public rclcpp::Node {
 public:
     VideoPublisher() : Node("video_publisher_node") {
         auto qos_profile = rclcpp::QoS(rclcpp::KeepLast(10)).best_effort();
-        raw_image_pub_ = this->create_publisher<sensor_msgs::msg::CompressedImage>("image/raw/compressed", qos_profile);
+        raw_image_pub_ = this->create_publisher<sensor_msgs::msg::CompressedImage>("Image_Topic", qos_profile);
         
         // 비디오 파일 열기
         cap_.open("/home/rapi5/ros2_ws/video/simulation/7_lt_ccw_100rpm_in.mp4"); 
