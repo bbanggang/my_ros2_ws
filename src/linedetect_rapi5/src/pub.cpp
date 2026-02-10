@@ -11,7 +11,8 @@ public:
         raw_image_pub_ = this->create_publisher<sensor_msgs::msg::CompressedImage>("Image_Topic", qos_profile);
         
         // 비디오 파일 열기
-        cap_.open("/home/rapi5/ros2_ws/video/simulation/5_lt_cw_100rpm_out.mp4"); 
+        // cap_.open("/home/rapi5/ros2_ws/video/simulation/lanefollow_100rpm_ccw.mp4"); 
+        cap_.open("/home/rapi5/ros2_ws/video/simulation/lanefollow_100rpm_cw.mp4"); 
         if (!cap_.isOpened()) {
             RCLCPP_ERROR(this->get_logger(), "Could not open video file!");
         }
