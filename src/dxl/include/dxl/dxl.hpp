@@ -69,7 +69,7 @@
 #define DXL2_ID                         2               // Dynamixel#2 ID: 2
 #define MX_BAUDRATE                     2000000         // for MX-12W model
 #define XL_BAUDRATE                     4000000         // for XL and XC model
-#define DEVICENAME                      "/dev/ttyUSB0"  // device file name
+#define DEVICENAME                      "/dev/u2d2"  // device file name
                                                         
 #define TORQUE_ENABLE                   1               // Value for enabling the torque
 #define TORQUE_DISABLE                  0               // Value for disabling the torque

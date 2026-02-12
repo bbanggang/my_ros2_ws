@@ -6,11 +6,16 @@
 using namespace std::placeholders;
 void mysub_callback(rclcpp::Node::SharedPtr node, Dxl& dxl, const geometry_msgs::msg::Vector3::SharedPtr msg)
 {
-RCLCPP_INFO(node->get_logger(), "Received message: %lf,%lf", msg->x, msg->y);
-dxl.setVelocity((int)msg->x, (int)msg->y);
+    auto start_time = std::chrono::high_resolution_clock::now();
+    dxl.setVelocity((int)msg->x, (int)msg->y);
+    auto end_time = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> elapsed = end_time - start_time;
+    RCLCPP_INFO(node->get_logger(), "Received message: %.2lf,%.2lf Execution time: %.3f ms", msg->x, msg->y, elapsed.count());
 }
-int main(int argc, char* argv[])
+
+int main(int argc, char* argv[])    
 {
+
     rclcpp::init(argc, argv);
     Dxl dxl;
     auto node = std::make_shared<rclcpp::Node>("node_dxlsub");
