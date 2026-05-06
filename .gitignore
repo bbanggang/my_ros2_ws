@@ -2,6 +2,7 @@
 build/
 install/
 log/
+.cache/
 
 # VS Code 설정 (필요하면 주석 해제해서 공유 가능하지만, 보통 개인 설정이라 제외함)
 .vscode/
