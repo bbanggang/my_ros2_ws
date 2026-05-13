@@ -7,10 +7,10 @@ class HelloworldPublisher(Node):
     def __init__(self):
         super().__init__('helloworld_publisher')
         qos_profile = QoSProfile(depth=10)
-        self.helloworld_publisher = self.create_publisher(String,
-        'helloworld', qos_profile)
+        self.helloworld_publisher = self.create_publisher(String, 'helloworld', qos_profile)
         self.timer = self.create_timer(1, self.publish_helloworld_msg)
         self.count = 0
+
     def publish_helloworld_msg(self):
         msg = String()
         msg.data = 'Hello World: {0}'.format(self.count)
@@ -28,6 +28,6 @@ def main(args=None):
     finally:
         node.destroy_node()
         rclpy.shutdown()
-        
+
 if __name__ == '__main__':
     main()

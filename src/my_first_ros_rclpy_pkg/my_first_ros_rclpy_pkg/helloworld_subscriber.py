@@ -7,11 +7,7 @@ class HelloworldSubscriber(Node):
     def __init__(self):
         super().__init__('Helloworld_subscriber')
         qos_profile = QoSProfile(depth=10)
-        self.helloworld_subscriber = self.create_subscription(
-        String,
-        'helloworld',
-        self.subscribe_topic_message,
-        qos_profile)
+        self.helloworld_subscriber = self.create_subscription(String, 'helloworld', self.subscribe_topic_message, qos_profile)
     def subscribe_topic_message(self, msg):
         self.get_logger().info('Received message: {0}'.format(msg.data))
 
